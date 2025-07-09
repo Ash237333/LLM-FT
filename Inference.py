@@ -9,11 +9,13 @@ import Model_Loader
 from huggingface_hub import login
 import os
 
+
 token = os.getenv("HUGGINGFACE_HUB_TOKEN")
 if not token:
     raise ValueError("HUGGINGFACE_HUB_TOKEN env variable not set!")
 
 login(token=token)
+model, tokenizer = Model_Loader.load_model()
 
 
 def setup_pipeline():

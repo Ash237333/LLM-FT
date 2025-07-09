@@ -4,7 +4,8 @@
 #SBATCH -J huggingface_token_test
 #SBATCH -p nodes
 #SBATCH -N 1
-#SBATCH -t 1:00:00
+#SBATCH -n 1
+#SBATCH -t 4:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
 
 
