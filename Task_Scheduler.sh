@@ -1,11 +1,9 @@
 #!/bin/bash -l
 
 #SBATCH --export=ALL
-#SBATCH -J LLM-8bitQ-Inference_test
-#SBATCH -p gpu-v100
+#SBATCH -J huggingface_token_test
+#SBATCH -p nodes
 #SBATCH -N 1
-#SBATCH --gres=gpu:1
-#SBATCH --nodelist=gpu05
 #SBATCH -t 1:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
 

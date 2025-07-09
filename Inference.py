@@ -67,9 +67,9 @@ def chat_loop(pipeline, tokenizer):
     messages.append({"role": "assistant", "content": response})
 
 
-if __name__ == "__main__":
-    try:
-        pipeline, tokenizer = setup_pipeline()
-        chat_loop(pipeline, tokenizer)
-    except KeyboardInterrupt:
-        print("\nInterrupted. Exiting.")
+#if __name__ == "__main__":
+#    try:
+#        pipeline, tokenizer = setup_pipeline()
+#        chat_loop(pipeline, tokenizer)
+#    except KeyboardInterrupt:
+#        print("\nInterrupted. Exiting.")
