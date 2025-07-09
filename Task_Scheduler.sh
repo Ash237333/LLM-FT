@@ -2,7 +2,7 @@
 
 #SBATCH --export=ALL
 #SBATCH -J LLM-8bitQ-Inference_test
-#SBATCH -p gpu-140s-low
+#SBATCH -p gpu-l40s-low
 #SBATCH -N 1
 #SBATCH --gres=gpu:1
 #SBATCH --nodelist=gpu45
