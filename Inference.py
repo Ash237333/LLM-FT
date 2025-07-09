@@ -50,17 +50,11 @@ def chat_loop(pipeline, tokenizer):
 
     print("Enter a compound composition (or type 'exit' or 'quit' to close the program):\n")
     sys.stdout.flush()
-    while True:
-        user_input = input(">>> ")
-
-        if user_input.lower() in {"exit", "quit"}:
-            print("Exiting.")
-            break
-
-        messages.append({"role": "user", "content": user_input})
-        response = generate_response(pipeline, messages, eos_token)
-        print(f"\nModel output:\n{response}\n")
-        messages.append({"role": "assistant", "content": response})
+    user_input = "Ba8Ga16Sn30"
+    messages.append({"role": "user", "content": user_input})
+    response = generate_response(pipeline, messages, eos_token)
+    print(f"\nModel output:\n{response}\n")
+    messages.append({"role": "assistant", "content": response})
 
 
 if __name__ == "__main__":
