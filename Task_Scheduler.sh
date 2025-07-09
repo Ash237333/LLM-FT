@@ -12,6 +12,8 @@
 
 date
 
+echo "HUGGINGFACE_HUB_TOKEN is set: ${HUGGINGFACE_HUB_TOKEN:0:8}..."
+
 echo "This code is running on ${HOSTNAME}"
 
 START_TIME=$(date +%s)
