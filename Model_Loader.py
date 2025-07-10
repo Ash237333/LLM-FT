@@ -6,6 +6,15 @@ SYSTEM_PROMPT = ("You are an expert inorganic chemist. Determine if the followin
                  "likely to be synthesizable based on its composition, answering only"
                  " 'P' (for positive or possible) and 'U' (for unknown or unlikely).")
 
+from huggingface_hub import login
+import os
+
+
+token = os.getenv("HUGGINGFACE_HUB_TOKEN")
+if not token:
+    raise ValueError("HUGGINGFACE_HUB_TOKEN env variable not set!")
+login(token=token)
+
 
 def load_model():
     """
