@@ -5,6 +5,28 @@ import time
 import Model_Loader
 from Eval import compute_metrics
 
+def get_collate_fn(tokenizer):
+    def collate_fn(batch):
+        print("began putting into lists")
+        input_ids = [example["input_ids"] for example in batch]
+        attention_mask = [example["attention_mask"] for example in batch]
+        labels = [example["labels"] for example in batch]
+
+        print("began Padding")
+        batch_encoding = tokenizer.pad(
+            {"input_ids": input_ids, "attention_mask": attention_mask},
+            padding=True,
+            return_tensors="pt"
+        )
+
+        print("began padding labels")
+        max_len = batch_encoding["input_ids"].shape[1]
+        padded_labels = [label + [-100] * (max_len - len(label)) for label in labels]
+        batch_encoding["labels"] = torch.tensor(padded_labels, dtype=torch.long)
+
+        return batch_encoding
+    return collate_fn
+
 lora_config = LoraConfig(
     r=16,
     lora_alpha=32,
@@ -14,6 +36,8 @@ lora_config = LoraConfig(
     task_type="CAUSAL_LM"
 )
 model, tokenizer = Model_Loader.load_model()
+
+data_collator = get_collate_fn(tokenizer)
 
 dataset = Model_Loader.load_custom_dataset()
 dataset = Model_Loader.prep_dataset(dataset, tokenizer)
@@ -41,7 +65,8 @@ trainer = Trainer(
     train_dataset=dataset["train"],
     eval_dataset=dataset["test"],
     tokenizer=tokenizer,
-    compute_metrics=compute_metrics
+    compute_metrics=compute_metrics,
+    data_collator=data_collator
 )
 
 torch.cuda.reset_peak_memory_stats()
