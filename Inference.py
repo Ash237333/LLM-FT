@@ -3,13 +3,13 @@ import sys
 import torch
 import transformers
 
-import Model_Loader
+import Preprocessing
 
-model, tokenizer = Model_Loader.load_model()
+model, tokenizer = Preprocessing.load_model()
 
 
 def setup_pipeline():
-    model, tokenizer = Model_Loader.load_model()
+    model, tokenizer = Preprocessing.load_model()
     pipeline = transformers.pipeline(
         "text-generation",
         model=model,
@@ -58,8 +58,7 @@ def chat_loop(pipeline, tokenizer):
     print(f"\nModel output:\n{response}\n")
     messages.append({"role": "assistant", "content": response})
 
-
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    try:
 #        pipeline, tokenizer = setup_pipeline()
 #        chat_loop(pipeline, tokenizer)

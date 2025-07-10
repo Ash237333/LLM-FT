@@ -1,31 +1,9 @@
+import torch
 from peft import prepare_model_for_kbit_training, LoraConfig, get_peft_model
 from transformers import Trainer, TrainingArguments
-import torch
-import time
-import Model_Loader
+
 from Eval import compute_metrics
-
-def get_collate_fn(tokenizer):
-    def collate_fn(batch):
-        print("began putting into lists")
-        input_ids = [example["input_ids"] for example in batch]
-        attention_mask = [example["attention_mask"] for example in batch]
-        labels = [example["labels"] for example in batch]
-
-        print("began Padding")
-        batch_encoding = tokenizer.pad(
-            {"input_ids": input_ids, "attention_mask": attention_mask},
-            padding=True,
-            return_tensors="pt"
-        )
-
-        print("began padding labels")
-        max_len = batch_encoding["input_ids"].shape[1]
-        padded_labels = [label + [-100] * (max_len - len(label)) for label in labels]
-        batch_encoding["labels"] = torch.tensor(padded_labels, dtype=torch.long)
-
-        return batch_encoding
-    return collate_fn
+from Preprocessing import DataCollator, load_model, load_custom_dataset, prep_dataset
 
 lora_config = LoraConfig(
     r=16,
@@ -35,12 +13,12 @@ lora_config = LoraConfig(
     bias="none",
     task_type="CAUSAL_LM"
 )
-model, tokenizer = Model_Loader.load_model()
+model, tokenizer = load_model()
 
-data_collator = get_collate_fn(tokenizer)
+data_collator = DataCollator(tokenizer)
 
-dataset = Model_Loader.load_custom_dataset()
-dataset = Model_Loader.prep_dataset(dataset, tokenizer)
+dataset = load_custom_dataset("Paper_Dataset.json", 0.2)
+dataset = prep_dataset(dataset, tokenizer)
 
 model = prepare_model_for_kbit_training(model)
 model = get_peft_model(model, lora_config)
@@ -70,12 +48,9 @@ trainer = Trainer(
 )
 
 torch.cuda.reset_peak_memory_stats()
-start_time = time.time()
 
 trainer.train()
 model.save_pretrained("./lora/final_adapter")
 
-end_time = time.time()
-max_memory = torch.cuda.max_memory_allocated() / (1024 ** 3)  # Convert to GB
+max_memory = torch.cuda.max_memory_allocated() / (1024 ** 3)
 print(f"\nMax GPU memory used: {max_memory:.2f} GB")
-print(f"Training time: {(end_time - start_time)/60:.2f} minutes")
