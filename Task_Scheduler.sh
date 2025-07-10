@@ -1,18 +1,17 @@
 #!/bin/bash -l
 
 #SBATCH --export=ALL
-#SBATCH -J huggingface_token_test
-#SBATCH -p nodes
+#SBATCH -J 8B-Instruct-Paper-dataset
+#SBATCH -p gpu-a-lowsmall
 #SBATCH -N 1
-#SBATCH -n 1
-#SBATCH -t 4:00:00
+#SBATCH --nodelist=gpu16
+#SBATCH --gres=gpu:1
+#SBATCH -t 24:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
 
 
 
 date
-
-echo "HUGGINGFACE_HUB_TOKEN is set: ${HUGGINGFACE_HUB_TOKEN:0:8}..."
 
 echo "This code is running on ${HOSTNAME}"
 

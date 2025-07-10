@@ -1,6 +1,7 @@
 from peft import prepare_model_for_kbit_training, LoraConfig, get_peft_model
 from transformers import Trainer, TrainingArguments
-
+import torch
+import time
 import Model_Loader
 from Eval import compute_metrics
 
@@ -31,9 +32,6 @@ training_arguments = TrainingArguments(
     per_device_eval_batch_size=4,
     eval_strategy="steps",
     eval_steps=500,
-    save_strategy="steps",
-    save_steps=1000,
-    save_total_limit=3,
     fp16=True
 )
 
@@ -46,4 +44,13 @@ trainer = Trainer(
     compute_metrics=compute_metrics
 )
 
+torch.cuda.reset_peak_memory_stats()
+start_time = time.time()
+
 trainer.train()
+model.save_pretrained("./lora/final_adapter")
+
+end_time = time.time()
+max_memory = torch.cuda.max_memory_allocated() / (1024 ** 3)  # Convert to GB
+print(f"\nMax GPU memory used: {max_memory:.2f} GB")
+print(f"Training time: {(end_time - start_time)/60:.2f} minutes")

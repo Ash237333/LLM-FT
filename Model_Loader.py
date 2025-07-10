@@ -1,5 +1,6 @@
-from datasets import load_dataset
+from datasets import load_dataset, Dataset, DatasetDict
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+import json
 
 SYSTEM_PROMPT = ("You are an expert inorganic chemist. Determine if the following compound is "
                  "likely to be synthesizable based on its composition, answering only"
@@ -61,6 +62,28 @@ def load_custom_dataset():
 
     dataset = dataset.map(add_response)
     dataset = dataset["train"].train_test_split(test_size=0.2)
+    return dataset
+
+def load_paper_dataset():
+    with open("PU_train_test.json") as f:
+        raw_data = json.load(f)
+
+    # Helper to convert each split
+    def convert_split(split_data):
+        records = []
+        for label in ["positive", "negative"]:
+            for chem in split_data.get(label, []):
+                records.append({
+                    "text": chem,
+                    "label": 1 if label == "positive" else 0
+                })
+        return Dataset.from_list(records)
+
+    # Create the DatasetDict
+    dataset = DatasetDict({
+        "train": convert_split(raw_data["train"]),
+        "test": convert_split(raw_data["test"])
+    })
     return dataset
 
 

@@ -1,8 +1,8 @@
 import torch
 from sklearn.metrics import recall_score
 
-P_TOKEN = 11
-U_TOKEN = 12
+P_TOKEN = 47
+U_TOKEN = 52
 ALPHA = 0.088
 
 def compute_metrics(eval_pred, predict_threshold=True):
