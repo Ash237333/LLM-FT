@@ -34,11 +34,12 @@ training_arguments = TrainingArguments(
     report_to="tensorboard",
     per_device_train_batch_size=64,
     gradient_accumulation_steps=4,
-    per_device_eval_batch_size=4,
+    per_device_eval_batch_size=64,
     eval_strategy="steps",
     eval_steps=500,
     fp16=True,
-    eval_accumulation_steps=4
+    eval_accumulation_steps=1,
+    num_train_epochs=1
 )
 
 trainer = Trainer(

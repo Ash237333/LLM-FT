@@ -4,8 +4,8 @@
 #SBATCH -J 8B-Instruct-Paper-dataset
 #SBATCH -p gpu-l40s-low
 #SBATCH -N 1
-#SBATCH --nodelist=gpu46
-#SBATCH --gres=gpu:1
+#SBATCH --nodelist=gpu06
+#SBATCH --gres=gpu:4
 #SBATCH -t 24:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
 
@@ -19,7 +19,7 @@ module load python-venv/1.0-gcc14.2.0
 module load cuda/12.8.0-gcc14.2.0
 source LLM-FT/bin/activate
 
-python Tester.py
+python Training.py
 
 END_TIME=$(date +%s)
 
