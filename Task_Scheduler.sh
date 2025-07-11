@@ -19,7 +19,7 @@ module load python-venv/1.0-gcc14.2.0
 module load cuda/12.8.0-gcc14.2.0
 source LLM-FT/bin/activate
 
-python Training.py
+python Tester.py
 
 END_TIME=$(date +%s)
 
