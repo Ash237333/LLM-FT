@@ -45,7 +45,6 @@ trainer = Trainer(
     processing_class=tokenizer,
     compute_metrics=compute_metrics,
     data_collator=data_collator,
-    label_names=["labels"],
 )
 
 torch.cuda.reset_peak_memory_stats()
