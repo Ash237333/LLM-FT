@@ -2,9 +2,9 @@
 
 #SBATCH --export=ALL
 #SBATCH -J 8B-Instruct-Paper-dataset
-#SBATCH -p gpu-a100-lowbig
+#SBATCH -p gpu-h100
 #SBATCH -N 1
-#SBATCH --nodelist=gpu06
+#SBATCH --nodelist=gpu32
 #SBATCH --gres=gpu:4
 #SBATCH -t 24:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
