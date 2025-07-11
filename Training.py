@@ -29,7 +29,7 @@ training_arguments = TrainingArguments(
     logging_dir="./logs",
     logging_steps=100,
     report_to="tensorboard",
-    per_device_train_batch_size=64,
+    per_device_train_batch_size=256,
     gradient_accumulation_steps=4,
     per_device_eval_batch_size=4,
     eval_strategy="steps",
@@ -42,9 +42,10 @@ trainer = Trainer(
     args=training_arguments,
     train_dataset=dataset["train"],
     eval_dataset=dataset["test"],
-    tokenizer=tokenizer,
+    processing_class=tokenizer,
     compute_metrics=compute_metrics,
-    data_collator=data_collator
+    data_collator=data_collator,
+    label_names=["labels"],
 )
 
 torch.cuda.reset_peak_memory_stats()
