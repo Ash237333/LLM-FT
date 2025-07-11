@@ -22,8 +22,6 @@ base_model.eval()
 all_logits = []
 all_labels = []
 
-print("began eval")
-
 with torch.no_grad():
     for batch in tqdm(eval_dataloader):
         input_ids = batch['input_ids'].to(base_model.device)
@@ -51,3 +49,7 @@ eval_pred = EvalPrediction(predictions=all_logits, label_ids=all_labels)
 results = Eval.compute_metrics(eval_pred, predict_threshold=True)
 
 print("Evaluation results:", results)
+
+with open("evaluation_results.txt", "w") as f:
+    for key, value in results.items():
+        f.write(f"{key}: {value}\n")
