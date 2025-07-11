@@ -1,10 +1,12 @@
-import json
 import os
 
 import torch
-from datasets import Dataset, DatasetDict, ClassLabel, Features, Value
 from huggingface_hub import login
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, PreTrainedTokenizer
+import json
+import pandas as pd
+from datasets import Dataset, DatasetDict
+from sklearn.model_selection import train_test_split
 
 token = os.getenv("HUGGINGFACE_HUB_TOKEN")
 if not token:
@@ -46,46 +48,23 @@ def load_model():
 
 
 def load_custom_dataset(dataset_path, test_split):
-    """
-    Loads a custom dataset from a JSON file and splits it into train and test sets.
-
-    The input JSON file should contain two keys: "positive" and "unlabeled", each containing a list of compounds.
-    The "positive" samples are labeled as "P", and the "unlabeled" samples are labeled as "U".
-    The data is split into train and test sets while preserving the label distribution using stratified sampling.
-
-    Args:
-        dataset_path (str): Path to the input JSON file containing "positive" and "unlabeled" entries.
-        test_split (float): Fraction of the dataset to reserve for testing (e.g., 0.2 for 20%).
-
-    Returns:
-        DatasetDict: A Hugging Face DatasetDict with 'train' and 'test' splits, each containing examples
-            with 'instruction' and 'response' fields (where 'response' is "P" or "U").
-    """
     with open(dataset_path) as f:
         raw_data = json.load(f)
 
-    # Use numeric labels for stratification: 1 for positive, 0 for unlabeled
-    data = [{"instruction": t, "response": 1} for t in raw_data.get("positive", [])] + \
-           [{"instruction": t, "response": 0} for t in raw_data.get("unlabeled", [])]
+    data = [{"instruction": t, "response": "P"} for t in raw_data.get("positive", [])] + \
+           [{"instruction": t, "response": "U"} for t in raw_data.get("unlabeled", [])]
 
-    dataset = Dataset.from_list(data)
+    df = pd.DataFrame(data)
 
-    # Split with stratification on numeric labels
-    split = dataset.train_test_split(test_size=test_split, stratify_by_column="response")
+    train_df, test_df = train_test_split(df, test_size=test_split, stratify=df["response"], random_state=42)
 
-    # Map numeric labels back to strings
-    label_map = {1: "P", 0: "U"}
+    train_dataset = Dataset.from_pandas(train_df.reset_index(drop=True))
+    test_dataset = Dataset.from_pandas(test_df.reset_index(drop=True))
 
-    def map_labels(example):
-        example["response"] = label_map[example["response"]]
-        return example
-
-    # Apply mapping to both splits
-    train = split["train"].map(map_labels)
-    test = split["test"].map(map_labels)
-
-    return DatasetDict({"train": train, "test": test})
-
+    return DatasetDict({
+        "train": train_dataset,
+        "test": test_dataset
+    })
 
 def prep_dataset(dataset, tokenizer):
     """
@@ -129,8 +108,6 @@ def tokenize_chat(example, tokenizer):
           dict: A dictionary with 'input_ids', 'attention_mask', and 'labels' suitable for language model training.
       """
 
-    response_str = label_feature.int2str(example["response"]) if isinstance(example["response"], int) else example[
-        "response"]
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": example["instruction"]},
