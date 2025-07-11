@@ -2,7 +2,7 @@ import json
 import os
 
 import torch
-from datasets import Dataset, DatasetDict
+from datasets import Dataset, DatasetDict, ClassLabel, Features, Value
 from huggingface_hub import login
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, PreTrainedTokenizer
 
@@ -61,12 +61,20 @@ def load_custom_dataset(dataset_path, test_split):
            DatasetDict: A Hugging Face DatasetDict with 'train' and 'test' splits, each containing examples
                with 'instruction' and 'response' fields.
        """
+
     with open(dataset_path) as f:
         raw_data = json.load(f)
 
     data = [{"instruction": t, "response": "P"} for t in raw_data.get("positive", [])] + \
-           [{"instruction": t, "response": "U"} for t in raw_data.get("unlabeled", [])]
-    dataset = Dataset.from_list(data)
+            [{"instruction": t, "response": "U"} for t in raw_data.get("unlabeled", [])]
+
+    features = Features({
+        "instruction": Value("string"),
+        "response": ClassLabel(names=["P", "U"])  # Map "P" -> 0, "U" -> 1 automatically
+    })
+
+    dataset = Dataset.from_list(data, features=features)
+
     dataset = dataset.train_test_split(test_size=test_split, stratify_by_column="response")
     return DatasetDict(dataset)
 
