@@ -4,7 +4,6 @@
 #SBATCH -J 8B-Instruct-Paper-dataset
 #SBATCH -p gpu-h100
 #SBATCH -N 1
-#SBATCH --nodelist=gpu32
 #SBATCH --gres=gpu:h100:4
 #SBATCH -t 24:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
