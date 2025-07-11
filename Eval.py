@@ -31,7 +31,8 @@ def compute_metrics(eval_pred, predict_threshold=True):
                 - "recall" (float): Recall score computed on known positive samples.
                 - "threshold" (float): The probability threshold used to classify positives.
         """
-    logits, labels = eval_pred.predictions, eval_pred.label_ids
+    logits = torch.tensor(eval_pred.predictions).cpu()
+    labels = torch.tensor(eval_pred.label_ids).cpu()
 
     logits_at_pos = logits[:, -2, [P_TOKEN, U_TOKEN]]
     probs = torch.softmax(logits_at_pos, dim=-1)

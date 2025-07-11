@@ -5,7 +5,7 @@ from tqdm import tqdm
 import Eval
 from Preprocessing import load_model, prep_dataset, load_custom_dataset, DataCollator
 
-dataset = load_custom_dataset()
+dataset = load_custom_dataset("Paper_Dataset.json", 0.2)
 base_model, tokenizer = load_model()
 dataset = prep_dataset(dataset, tokenizer)
 
