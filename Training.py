@@ -37,7 +37,8 @@ training_arguments = TrainingArguments(
     per_device_eval_batch_size=4,
     eval_strategy="steps",
     eval_steps=500,
-    fp16=True
+    fp16=True,
+    eval_accumulation_steps=4
 )
 
 trainer = Trainer(
