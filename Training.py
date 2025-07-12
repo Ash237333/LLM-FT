@@ -35,10 +35,11 @@ training_arguments = TrainingArguments(
     per_device_train_batch_size=64,
     gradient_accumulation_steps=4,
     per_device_eval_batch_size=64,
+    eval_do_concat_batches=False,
     eval_strategy="steps",
-    eval_steps=500,
+    eval_steps=5,
     fp16=True,
-    eval_accumulation_steps=1,
+    eval_accumulation_steps=32,
     num_train_epochs=1
 )
 
