@@ -5,7 +5,7 @@
 #SBATCH -p gpu-h100
 #SBATCH -N 1
 #SBATCH --nodelist=gpu32
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:1
 #SBATCH -t 24:00:00
 #SBATCH -o ./Output_Files/%x_%j.out
 
