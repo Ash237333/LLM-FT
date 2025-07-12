@@ -37,10 +37,10 @@ training_arguments = TrainingArguments(
     per_device_eval_batch_size=64,
     eval_do_concat_batches=False,
     eval_strategy="steps",
-    eval_steps=5,
+    eval_steps=500,
     fp16=True,
     eval_accumulation_steps=8,
-    num_train_epochs=1
+    num_train_epochs=3
 )
 
 trainer = Trainer(
