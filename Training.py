@@ -39,7 +39,7 @@ training_arguments = TrainingArguments(
     eval_strategy="steps",
     eval_steps=5,
     fp16=True,
-    eval_accumulation_steps=32,
+    eval_accumulation_steps=16,
     num_train_epochs=1
 )
 
