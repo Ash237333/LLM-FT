@@ -1,6 +1,10 @@
 from typing import Union, Any, Optional
+from transformers.utils import is_sagemaker_mp_enabled
 
-from transformers.trainer_pt_utils import smp_nested_concat, is_sagemaker_mp_enabled, smp_forward_only, nested_detach
+if is_sagemaker_mp_enabled():
+    from transformers.trainer_pt_utils import smp_nested_concat,smp_forward_only
+from transformers.trainer_pt_utils import nested_detach
+
 import torch
 from torch import nn
 from transformers import Trainer
