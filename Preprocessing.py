@@ -8,10 +8,10 @@ import pandas as pd
 from datasets import Dataset, DatasetDict
 from sklearn.model_selection import train_test_split
 
-token = os.getenv("HUGGINGFACE_HUB_TOKEN")
-if not token:
-    raise ValueError("HUGGINGFACE_HUB_TOKEN env variable not set!")
-login(token=token)
+#token = os.getenv("HUGGINGFACE_HUB_TOKEN")
+#if not token:
+#    raise ValueError("HUGGINGFACE_HUB_TOKEN env variable not set!")
+#login(token=token)
 
 SYSTEM_PROMPT = ("You are an expert inorganic chemist. Determine if the following compound is "
                  "likely to be synthesizable based on its composition, answering only"

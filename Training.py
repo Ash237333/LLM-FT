@@ -2,6 +2,7 @@ import torch
 from peft import prepare_model_for_kbit_training, LoraConfig, get_peft_model
 from transformers import Trainer, TrainingArguments
 from datetime import datetime
+from LoRATrainer import LoRATrainer
 
 from Eval import compute_metrics
 from Preprocessing import DataCollator, load_model, load_custom_dataset, prep_dataset
@@ -43,7 +44,7 @@ training_arguments = TrainingArguments(
     num_train_epochs=3
 )
 
-trainer = Trainer(
+trainer = LoRATrainer(
     model=model,
     args=training_arguments,
     train_dataset=dataset["train"],

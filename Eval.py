@@ -34,9 +34,8 @@ def compute_metrics(eval_pred, predict_threshold=True):
     logits = torch.tensor(eval_pred.predictions)
     labels = torch.tensor(eval_pred.label_ids)
 
-    logits_at_pos = logits[:, -2, [P_TOKEN, U_TOKEN]]
-    probs = torch.softmax(logits_at_pos, dim=-1)
-    p_probs = probs[:, 0]
+    probs = torch.softmax(logits, dim=-1)
+    p_probs = probs[:, -2, 0]
 
     true_at_pos = labels[:, -2]
     true_class = (true_at_pos == P_TOKEN).int()
